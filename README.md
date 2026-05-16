@@ -48,7 +48,7 @@ That's it. The card, the listing page, and the detail page all update automatica
 
 ## Adding a project screenshot
 
-1. Put the image in `/static/projects/my-project.webp` (webp preferred)
+1. Put the image in `/static/projects/my-project.webp`
 2. Add `image: '/projects/my-project.webp'` to the project object
 3. The detail page will render it instead of the placeholder
 
@@ -139,30 +139,3 @@ npm run check      # TypeScript + Svelte type checking
 ```
 
 ---
-
-## Trade-offs
-
-| Decision | Trade-off |
-|---|---|
-| Static project data in `.ts` | Fast & type-safe, but adding a project requires a redeploy |
-| No animation library | Smaller bundle; GSAP would enable more complex timelines if needed |
-| Contact form is frontend-only | Wire to Formspree or a SvelteKit form action to send real emails |
-
----
-
-## Wiring up the contact form
-
-Replace `handleForm` in `+page.svelte`:
-
-```ts
-async function handleForm(e: SubmitEvent) {
-  e.preventDefault();
-  formState = 'sending';
-  const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-    method: 'POST',
-    headers: { 'Accept': 'application/json' },
-    body: JSON.stringify({ name: formName, email: formEmail, message: formMessage }),
-  });
-  formState = res.ok ? 'sent' : 'idle';
-}
-```
