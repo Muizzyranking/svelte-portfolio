@@ -637,12 +637,6 @@
 }
 .skill-group:hover { border-color: var(--border2); }
 
-.skill-group-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .skill-group-label {
   font-family: var(--display); font-size: 0.88rem; font-weight: 700;
   color: var(--text); letter-spacing: -0.01em;
@@ -655,30 +649,9 @@
   width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
 }
 
-.skill-row {
-  display: flex; align-items: center; gap: 0.7rem;
-  padding: 0.4rem 0; border-bottom: 1px solid var(--border);
-}
-.skill-row:last-child { border-bottom: none; }
-
-.skill-name {
-  font-family: var(--sans); font-size: 0.75rem;
-  color: var(--text2); flex: 1; min-width: 0; font-weight: 500;
-}
-
-.skill-bar {
-  width: 64px; height: 3px;
-  background: var(--bg3); border-radius: 99px; overflow: hidden; flex-shrink: 0;
-}
-
 .skill-fill {
   height: 100%; border-radius: 99px; width: 0%;
   transition: width 1.25s var(--ease-out);
-}
-
-.skill-pct {
-  font-family: var(--mono); font-size: 0.58rem;
-  color: var(--text3); width: 2.4rem; text-align: right; flex-shrink: 0;
 }
 
 /* ── Contact ── */

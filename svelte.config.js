@@ -6,6 +6,12 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter(),
+    prerender: {
+      handleHttpError: ({ path, message }) => {
+        if (path.includes('favicon') || path.includes('resume') || path.includes('.pdf')) return;
+        throw new Error(message);
+      },
+    },
   },
 };
 
