@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import ProjectCard from '$lib/components/ProjectCard.svelte';
+  import ParticleCanvas from '$lib/components/ParticleCanvas.svelte';
   import { projects } from '$lib/data/projects';
 
-  /* ── Skills ── */
   const skillGroups = [
     {
       label: 'Frontend',
@@ -110,6 +110,7 @@
 <!-- ══════════════ HERO ══════════════ -->
 <section id="hero">
   <div class="bg-grid" aria-hidden="true"></div>
+  <ParticleCanvas />
   <div class="bg-glow-tl" aria-hidden="true"></div>
   <div class="bg-glow-br" aria-hidden="true"></div>
 
@@ -281,24 +282,7 @@
             {group.label}
           </div>
           {#each group.items as skill}
-            <div class="skill-row">
-              <span class="skill-name">{skill.name}</span>
-              <div
-                class="skill-bar"
-                role="meter"
-                aria-valuenow={skill.level}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label="{skill.name} {skill.level}%"
-              >
-                <div
-                  class="skill-fill"
-                  style="width:0%; background:{group.color}"
-                  data-level="{skill.level}"
-                ></div>
-              </div>
-              <span class="skill-pct">{skill.level}%</span>
-            </div>
+            <div class="skill-pill">{skill.name}</div>
           {/each}
         </div>
       {/each}
@@ -621,6 +605,24 @@
 /* ── Skills ── */
 #skills { border-top: 1px solid var(--border); }
 
+.skill-pill {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text2);
+  padding: 0.45rem 0.75rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.skill-pill:hover {
+  color: var(--green);
+  border-color: var(--border2);
+  background: var(--green-faint);
+}
+
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -634,6 +636,12 @@
   transition: border-color 0.3s;
 }
 .skill-group:hover { border-color: var(--border2); }
+
+.skill-group-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
 .skill-group-label {
   font-family: var(--display); font-size: 0.88rem; font-weight: 700;

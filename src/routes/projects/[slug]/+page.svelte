@@ -76,20 +76,6 @@
               {/each}
             </div>
           </div>
-        {:else}
-          <div class="content-section">
-            <div class="cs-label">
-              <span class="cs-num">02</span>
-              Screenshots
-            </div>
-            <div class="screenshot-placeholder">
-              <span class="placeholder-icon" aria-hidden="true">◫</span>
-              <span class="placeholder-text">
-                // add screenshots to <code>static/projects/{p.slug}/</code><br/>
-                // then list paths in <code>projects.ts → screenshots: []</code>
-              </span>
-            </div>
-          </div>
         {/if}
 
         <!-- THE CHALLENGE -->
@@ -257,10 +243,10 @@
 
   /* Screenshots */
   .screenshots-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
   .screenshot {
     margin: 0;
@@ -272,9 +258,11 @@
   }
   .screenshot:hover { border-color: var(--border2); }
 
-  .screenshot img {
-    width: 100%; height: auto; display: block;
-  }
+    .screenshot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
   .screenshot-placeholder {
     height: 180px;
