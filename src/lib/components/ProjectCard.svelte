@@ -4,20 +4,32 @@
   export let index = 0;
 
   const icons: Record<string, string> = {
-    Backend: '⚙', 'AI/ML': '◈', 'Full-stack': '⚡', Infra: '▦', Other: '○',
+    Backend: '⚙', 'AI/ML': '◈', 'Full-stack': '⚡', Frontend: '▣', Infra: '▦', Other: '○',
+  };
+
+  const catColors: Record<string, string> = {
+    Backend: '#9fbf6b', 'AI/ML': '#c3a868', 'Full-stack': '#6b9fbf',
+    Frontend: '#bf6b9f', Infra: '#9a9fbf', Other: '#6b7f5e',
   };
 </script>
 
 <a
   href="/projects/{project.slug}"
-  class="card"
-  style="transition-delay: {index * 80}ms"
+  class="card reveal"
+  style="transition-delay: {index * 100}ms"
   aria-label="View {project.title}"
 >
   <div class="card-img">
-    <span class="card-icon" aria-hidden="true">{icons[project.category] ?? '○'}</span>
-    <div class="card-img-overlay" aria-hidden="true"></div>
-    <span class="cat-tag">{project.category}</span>
+      {#if project.image}
+        <img src={project.image} alt="{project.title} screenshot" class="card-cover" loading="lazy" />
+      {:else}
+        <span class="card-icon" aria-hidden="true">{icons[project.category] ?? '○'}</span>
+      {/if}
+    <div class="card-shimmer" aria-hidden="true"></div>
+    <span
+      class="cat-tag"
+      style="color:{catColors[project.category]};border-color:{catColors[project.category]}44;"
+    >{project.category}</span>
     <span class="year-tag">{project.year}</span>
   </div>
 
@@ -40,17 +52,13 @@
     <div class="card-links">
       <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
       <span
-        class="card-link"
-        role="link"
-        tabindex="0"
+        class="card-link" role="link" tabindex="0"
         aria-label="Live demo for {project.title}"
         on:click|stopPropagation|preventDefault={() => window.open(project.liveUrl, '_blank')}
       >↗ Live</span>
       <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
       <span
-        class="card-link"
-        role="link"
-        tabindex="0"
+        class="card-link" role="link" tabindex="0"
         aria-label="GitHub repo for {project.title}"
         on:click|stopPropagation|preventDefault={() => window.open(project.githubUrl, '_blank')}
       >⌥ GitHub</span>
@@ -60,142 +68,117 @@
 
 <style>
   .card {
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
+    text-decoration: none; color: inherit;
+    /* Override base reveal transform for cards — they slide up individually */
     transition:
+      opacity 0.55s var(--ease-out),
+      transform 0.55s var(--ease-out),
       border-color 0.3s,
-      transform 0.35s var(--ease-out),
       box-shadow 0.35s;
-    will-change: transform;
+    will-change: transform, opacity;
   }
 
+  .card-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.card:hover .card-cover {
+  transform: scale(1.03);
+}
+
+  /* Reveal state — driven by .reveal/.visible in layout */
+  .card:not(.visible) { opacity: 0; transform: translateY(28px); }
+  .card.visible       { opacity: 1; transform: translateY(0); }
+
+  /* Hover — separate from reveal, additive */
   .card:hover {
     border-color: var(--border2);
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(159,191,107,0.08);
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(159,191,107,0.07);
     opacity: 1;
   }
 
-  .card:hover .card-arrow  { transform: translate(3px, -3px); opacity: 1; }
-  .card:hover .card-img-overlay { opacity: 1; }
-  .card:hover .card-icon { opacity: 0.2; transform: scale(1.1); }
+  .card:hover .card-arrow  { transform: translate(3px,-3px); opacity: 1; }
+  .card:hover .card-shimmer { opacity: 1; }
+  .card:hover .card-icon   { opacity: 0.2; transform: scale(1.1); }
 
   /* Image area */
   .card-img {
-    height: 160px;
-    background: var(--bg3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 1px solid var(--border);
+    height: 155px; background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
   }
 
   .card-icon {
-    font-size: 3rem;
-    opacity: 0.1;
+    font-size: 3rem; opacity: 0.09;
     transition: opacity 0.35s, transform 0.35s var(--ease-out);
   }
 
-  .card-img-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--green-faint), transparent);
-    opacity: 0;
-    transition: opacity 0.35s;
+  .card-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--green-faint), transparent 60%);
+    opacity: 0; transition: opacity 0.35s;
   }
 
   .cat-tag {
-    position: absolute;
-    top: 0.7rem; right: 0.7rem;
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    color: var(--green);
-    background: rgba(11,12,9,0.8);
-    border: 1px solid var(--border2);
-    padding: 0.18rem 0.5rem;
-    border-radius: var(--radius-sm);
-    letter-spacing: 0.06em;
-    backdrop-filter: blur(4px);
+    position: absolute; top: 0.7rem; right: 0.7rem;
+    font-family: var(--mono); font-size: 0.58rem;
+    border: 1px solid; padding: 0.18rem 0.5rem;
+    border-radius: var(--radius-sm); letter-spacing: 0.06em;
+    background: rgba(11,12,9,0.75); backdrop-filter: blur(4px);
   }
 
   .year-tag {
-    position: absolute;
-    top: 0.7rem; left: 0.7rem;
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    color: var(--text3);
-    letter-spacing: 0.06em;
+    position: absolute; top: 0.7rem; left: 0.7rem;
+    font-family: var(--mono); font-size: 0.58rem;
+    color: var(--text3); letter-spacing: 0.06em;
   }
 
   /* Body */
   .card-body { padding: 1.3rem; display: flex; flex-direction: column; flex: 1; }
 
   .card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 0.45rem;
-    gap: 0.5rem;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 0.45rem; gap: 0.5rem;
   }
 
   .card-title {
-    font-family: var(--display);
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    font-family: var(--display); font-size: 1.05rem; font-weight: 700;
+    color: var(--text); letter-spacing: -0.02em; line-height: 1.2;
   }
 
   .card-arrow {
-    color: var(--green);
-    opacity: 0.35;
+    color: var(--green); opacity: 0.35;
     transition: transform 0.3s var(--ease-spring), opacity 0.3s;
-    flex-shrink: 0;
-    font-size: 1.1rem;
-    margin-top: 0.1rem;
+    flex-shrink: 0; font-size: 1.1rem; margin-top: 0.1rem;
   }
 
   .card-desc {
-    font-size: 0.78rem;
-    color: var(--text2);
-    line-height: 1.7;
-    margin-bottom: 1rem;
-    flex: 1;
+    font-size: 0.78rem; color: var(--text2); line-height: 1.7;
+    margin-bottom: 1rem; flex: 1;
   }
 
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-bottom: 1rem;
-  }
+  .stack { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
 
   .more { color: var(--text4); }
 
   .card-links {
-    display: flex;
-    gap: 1rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--border);
+    display: flex; gap: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--border);
   }
 
   .card-link {
-    font-family: var(--mono);
-    font-size: 0.64rem;
-    color: var(--green);
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    font-family: var(--mono); font-size: 0.64rem; color: var(--green);
+    letter-spacing: 0.05em; cursor: pointer; transition: opacity 0.2s;
   }
-
   .card-link:hover { opacity: 0.65; }
 </style>
